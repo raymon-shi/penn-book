@@ -1,0 +1,26 @@
+{
+  "name": "project-ray-nodejs-dependecies",
+  "version": "0.0.0",
+  "description": "Generated with Eclipse npm Tools",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb-v2-node": "0.1.0-preview.2",
+    "async": "*",
+    "aws-sdk": "==2.728.0",
+    "bootstrap": "^5.1.3",
+    "ejs": "*",
+    "ejs-lint": "^1.2.1",
+    "express": "==4.17.1",
+    "express-session": "^1.17.2",
+    "json5": "latest",
+    "lru-cache": "*",
+    "node-livy-client": "^1.0.0",
+    "pug": "==3.0.0",
+    "stemmer": "==1.0.5"
+  },
+  "author": "",
+  "license": "ISC"
+}

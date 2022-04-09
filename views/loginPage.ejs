@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	 <head>
+	 <link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style type="text/css">
+		body {
+			padding-top: 40px;
+			padding-bottom: 40px;
+			background-color: white;
+		}
+		.login-box {
+			max-width: 330px;
+			margin: 0 auto;
+		}
+		.login-box .form-control {
+			margin-bottom: 10px;
+		}
+	</style>
+	</head>
+	<body>
+  	 <div class="login-box">
+  	   	 <h1>Login Page</h1>
+	 	 <form action="/checklogin" method="post">
+		    <b> Enter Username: </b> <input class = "form-control" type="text" name="username" required placeholder="username"> <br>
+		    <b> Enter Password: </b> <input class = "form-control" type="password" name="password" required placeholder="password"> <br>
+		    <input type="submit" value="Login" class = "btn btn-primary">
+	 	</form>
+	 	 <a href = "/signup"> Create Account </a>  <br>
+	 	   	<%if (message != null) { %>
+		  		<font color="red"><%= message %><p>
+		  	<% } %>
+ 	</div>
+
+	</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	 <head>
+	 <link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style type="text/css">
+		body {
+			padding-top: 40px;
+			padding-bottom: 40px;
+			background-color: white;
+		}
+		.login-box {
+			max-width: 330px;
+			margin: 0 auto;
+		}
+		.login-box .form-control {
+			margin-bottom: 10px;
+		}
+	</style>
+	</head>
+	<body>
+  	 <div class="login-box">
+  	   	 <h1>Sign Up Page</h1>
+	 	 <form action="/createaccount" method="post">
+		    <b> New Username </b> <input class = "form-control" type="text" name="username" required> <br>
+		    <b> New Password </b> <input class = "form-control" type="password" name="password" required> <br>
+		   	<b> First Name </b> <input class = "form-control" type="text" name="firstname" required> <br>
+		   	<b> Last Name </b> <input class = "form-control" type="text" name="lastname" required> <br>
+		   	<b> Email Address </b> <input class = "form-control" type="email" name="emailaddress" required> <br>
+		   	<b> Affiliation </b> <input class = "form-control" type="text" name="affiliation" required> <br>
+		   	<b> Birthday </b> <input class = "form-control" type="date" name="birthday" required> <br>
+		   	<b> 1st News Interest </b> <input class = "form-control" type="text" name="newsinterest1" required> <br>
+		   	<b> 2nd News Interest </b> <input class = "form-control" type="text" name="newsinterest2" required> <br>
+		    <input class ="btn btn-success" type="submit" value="Sign Up">
+	 	</form>
+	 	 <%if (message != null) { %>
+	  		<font color="red"><%= message %><p>
+		 <% } %>
+ 	</div>
+
+	</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+    <title>My Wall</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+    <link href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.min.css" rel="stylesheet">
+        
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<style type="text/css">
+    .login-head {
+        text-align: left;
+        margin: 2%;
+        float: left;
+    }
+    .statusposts {
+        float: right;
+        margin: 2%
+    }
+    .info {
+        margin-left: 2%;
+        margin-bottom: -20px;
+    }
+</style>
+
+<body style="height: 100%">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">PennBook</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" href="/friendVisualizationPage"> Friend Visualizer </a>
+              <a class="nav-link" href="/friendsList"> List of Friends </a>
+                 <a class="nav-link" href="/wall"> My Wall</a>
+                 <a class="nav-link" href="/chats"> Chat </a>
+                 <a class="nav-link" href="/newssearch"> News </a>       
+                 <a class="nav-link" href="/logout"> Logout </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </nav>
+    <div id = 'info' class = "info"></div>
+    <div class="login-head">
+        <button class="btn btn-danger" onclick="removeFriend()">Remove Friend</button>
+        <h1>Wall Posts</h1>
+        <form id="addWallPost" onsubmit="addWallPost(); return false" method="POST">
+            <input style="width: 100%;
+            padding: 4px;
+            margin: 8px 0;
+            border-radius: 2px;" name="content" id="content" type="text" required placeholder="Add Post">
+            <input class="btn btn-primary" type="submit" value="Add Wall Post">
+        </form>
+        <div id="wallposts">
+            <% if (data!=null) { for(var i=0; i< (data).length; i++) {%>
+                <div class="card" style="width: 50rem; margin-bottom: 1%">
+                    <div class="card-body">
+                        <% if (data[i].flipped.BOOL) { %>
+                            <h4>Posted by: <%= data[i].wallusername.S %>
+                            </h4>
+                            <h5 style="margin-top: 1rem;" id="<%=data[i].postuniqueid.S %>-time"><script>
+                                var time = new Date(parseInt(<%= data[i].timestamp.S %>))
+                                document.getElementById("<%=data[i].postuniqueid.S %>-time").innerHTML= time.toLocaleString('en-US', {timeZone: 'EST'}).toString();
+                                </script></h5>
+                            <p>
+                                <%= data[i].content.S %>
+                            </p>
+                            <%} else {%>
+                                <h4>Posted by: <%= data[i].posterusername.S %>
+                                </h4>
+                                <h5 style="margin-top: 1rem;" id="<%=data[i].postuniqueid.S %>-time"><script>
+                                    var time = new Date(parseInt(<%= data[i].timestamp.S %>))
+                                    document.getElementById("<%=data[i].postuniqueid.S %>-time").innerHTML= time.toLocaleString('en-US', {timeZone: 'EST'}).toString();
+                                    </script></h5>
+                                <p>
+                                    <%= data[i].content.S %>
+                                </p>
+
+                                <%} %>
+                                    <div id="<%=data[i].postuniqueid.S %>-comments"></div>
+                                    <form id="<%=data[i].postuniqueid.S %>" onsubmit="addComment(this.id); return false"
+                                        method="POST">
+                                        <input class="form-control" style="margin-bottom: 5px" name="comment"
+                                            type="text" required placeholder="Comment">
+                                        <input class="btn btn-dark" type="submit" value="Add Comment">
+                                    </form>
+                    </div>
+                </div>
+                <% }} %>
+        </div>
+    </div>
+    <div class="statusposts">    
+    <h1>Status Updates</h2>
+    <div id="statusupdates"></div>
+    </div>
+
+    <script type="text/javascript">
+        //make a /getuser function and store it in username
+        var loggedinuser;
+        console.log(document.location);
+        var wallusername = (new URL(document.location)).searchParams.entries().next().value[1];
+        //var wallusername = params.user;
+        //console.log("WALLUSERNAME: " + wallusername)
+        var posts = <%- JSON.stringify(data) %> ;
+        if (posts == null) {
+            posts = []
+        }
+        console.log(posts)
+        console.log(posts.length)
+        var gotDetails = false;
+        function details () {
+            $.ajax({
+                    type: "GET",
+                    url: "/getUserDetails?user=" + wallusername,
+                    success: function (details) {
+                        console.log(details)
+                        const div = document.getElementById('info');
+                        const h1 = document.createElement('h1');
+                        h1.innerHTML = details.firstname.S + " " + details.lastname.S;
+                        const h4 = document.createElement('h4');
+                        h4.innerHTML = "Affiliation: " + details.affiliation.S
+                        const h42 = document.createElement('h4');
+                        h42.innerHTML = "Birthday: " + details.birthday.S
+                        div.append(h1);
+                        div.append(h4);
+                        div.append(h42)                
+                    }
+                })
+        }
+        var postsSet = new Set()
+        var commentsSet = new Set()
+        var latestComm = new Set()
+        //var statusPosts =  new S
+        for (var i = 0; i < posts.length; i++) {
+            console.log(posts[i].postuniqueid.S);
+            postsSet.add(posts[i].postuniqueid.S)
+        }
+
+        async function getStatusUpdates() {
+            return new Promise(resolve => {
+                $.ajax({
+                    type: "GET",
+                    url: "/getMyStatusUpdates?user=" + wallusername,
+                    success: function (updates) {
+                        console.log("here with updates")
+                        console.log(updates);
+                        for (var i = 0; i < updates.length; i++) {
+                            if (!postsSet.has(updates[i].postuniqueid.S)) {
+                                const outerDiv = document.createElement('div');
+                                outerDiv.setAttribute('class', 'card');
+                                outerDiv.setAttribute('style', 'width: 50rem; margin-bottom: 1%')
+
+                                const secondDiv = document.createElement('div');
+                                secondDiv.setAttribute('class', 'card-body');
+
+
+                                const h4 = document.createElement('h4');
+
+                                h4.setAttribute('style', 'margin-top: 1rem;')
+                                h4.innerHTML = updates[i].content.S;
+
+                                var time = new Date(parseInt(updates[i].timestamp.S))
+                                const h5 = document.createElement('h5');
+                                h5.setAttribute('style', 'margin-top: 1rem;')
+                                h5.innerHTML = time.toLocaleString('en-US', {timeZone: 'EST'}).toString();
+
+                                const formdiv = document.createElement('div');
+                                formdiv.setAttribute('id', updates[i].postuniqueid.S + "-comments")
+
+                                const form = document.createElement('form');
+                                form.setAttribute('id', updates[i].postuniqueid.S)
+                                form.setAttribute("method", "POST")
+                                form.setAttribute("onsubmit", "addComment(this.id); return false")
+
+                                const input1 = document.createElement('input');
+                                input1.setAttribute('class', 'form-control');
+                                input1.setAttribute('style', 'margin-bottom: 5px;')
+                                input1.setAttribute('name', 'comment');
+                                input1.setAttribute('type', 'text');
+                                input1.setAttribute('required', '');
+                                input1.setAttribute('placeholder', 'Comment');
+
+                                const input2 = document.createElement('input');
+                                input2.setAttribute('class', 'btn btn-dark');
+                                input2.setAttribute('value', 'Add Comment')
+                                input2.setAttribute('type', 'submit');
+
+                                form.append(input1);
+                                form.append(input2);
+                                secondDiv.append(h4);
+                                secondDiv.append(h5);
+                                secondDiv.append(formdiv);
+                                secondDiv.append(form);
+                                outerDiv.append(secondDiv)
+                                const divMain = document.getElementById("statusupdates")
+                                divMain.append(outerDiv);
+                                postsSet.add(updates[i].postuniqueid.S)
+                            }
+                        }
+                        resolve('Resolved');
+                    },
+
+                })
+            })
+        }
+
+        function getComments(postuniqueid) {
+            return new Promise(resolve => {
+                $.ajax({
+                    type: "GET",
+                    url: "/getComments?postid=" + postuniqueid,
+                    success: function (comments) {
+                        console.log("COMMMENTS HERE")
+                        console.log(comments);
+                        for (var i = 0; i < comments.length; i++) {
+                            var key = comments[i].timestamp.S + "-" + comments[i].usernameofcommentor.S;
+                            latestComm.add(key);
+                            console.log(postuniqueid);
+                            if (!commentsSet.has(key)) {
+                                console.log("ADDING COMMENT " + key)
+                                var div = document.getElementById(postuniqueid + "-comments")
+                                var divapp = document.createElement('div');
+                                var time = new Date(parseInt(comments[i].timestamp.S))
+                                divapp.innerHTML = comments[i].usernameofcommentor.S + ":   " + comments[i].content.S + " (" +
+                                time.toLocaleString('en-US', {timeZone: 'EST'}).toString() +  ")";
+                                divapp.setAttribute("id", key);
+                                //divapp.setAttribute('class', 'card');
+                                divapp.setAttribute('style', 'padding: 2px');
+                                div.prepend(divapp);
+                                commentsSet.add(key);
+                            }
+                        }
+                    },
+                })
+            })
+        }
+
+        async function getUser() {
+            return new Promise(resolve => {
+                $.ajax({
+                    type: "GET",
+                    url: "/getUser",
+                    success: function (data) {
+                        console.log(data);
+                        loggedinuser = data;
+                        resolve('Resolved');
+                        if (!gotDetails) {
+                            details();
+                            gotDetails = true;
+                        }
+                    }
+                })
+            })
+        }
+        function init() {
+            getUser().then(val => {
+                getStatusUpdates().then(val1 => {
+                    latestComm = new Set()
+                    console.log("POST SET")
+                    console.log(postsSet.size);
+                    var promises = []
+                    for (let item of postsSet) {
+                        console.log("GETTING " + item);
+                        promises.push(getComments(item));
+                    }
+                    Promise.all(promises).then(val => {
+                        for (let item of commentsSet) {
+                            if (!latestComm.has(item)) {
+                                console.log("DELETING COMM")
+                                document.getElementById(item).remove()
+                                commentsSet.delete(item);
+                            }
+                        }
+                        latestComm.clear()
+                    })
+                });
+            });
+
+        }
+
+        function addComment(id) {
+            console.log(id)
+            var form = $("#" + id);
+            var newcomm = form.serializeArray()
+            console.log("NEWCOMM")
+            console.log(newcomm);
+            var comment = {
+                "content": newcomm[0].value,
+                "timestamp": Date.now(),
+                "postuniqueid": id,
+                "usernameofcommentor": loggedinuser,
+            }
+
+            console.log(newcomm);
+            $.ajax({
+                type: "POST",
+                url: "/addComment",
+                data: comment,
+                success: function (data) {
+                    var key = comment.timestamp + "-" + comment.usernameofcommentor;
+                    const div = document.getElementById(id + "-comments");
+                    console.log("DIV")
+                    console.log(div);
+                    const divapp = document.createElement('div');
+                    var time = new Date(parseInt(comment.timestamp))
+                    divapp.innerHTML = comment.usernameofcommentor + ":   " + comment.content + " (" +
+                    time.toLocaleString('en-US', {timeZone: 'EST'}).toString() +  ")";
+                    divapp.setAttribute('style', 'padding: 2px');
+                    div.prepend(divapp)
+                    commentsSet.add(key);
+                }
+            })
+        }
+
+        function addWallPost() {
+            var form = $("#addWallPost");
+            var wall = form.serializeArray()
+            let timestamp = Date.now()
+            console.log(wall[0].value)
+            let postuniqueid = timestamp + "-" + loggedinuser;
+            var wallData = {
+                "wallusername": { "S": wallusername },
+                "timestamp": { "S": timestamp },
+                "content": { "S": wall[0].value },
+                "postuniqueid": { "S": postuniqueid },
+                "flipped": { BOOL: false },
+                "posterusername": { "S": loggedinuser },
+            }
+            console.log("WALL DATA")
+            console.log(wallData)
+            $.ajax({
+                type: "POST",
+                url: "/addWallPost",
+                data: wallData,
+                success: function (bool) {
+                    if (bool) {
+                        const div = document.getElementById("wallposts");
+                        const divpostmain = document.createElement("div");
+                        divpostmain.setAttribute('class', 'card');
+                        divpostmain.setAttribute('style', 'width: 50rem; margin-bottom: 1%');
+
+                        const divpost = document.createElement("div");
+                        divpost.setAttribute('class', 'card-body');
+                        const h4 = document.createElement('h4');
+                        h4.innerHTML = "Posted by: " + wallData.posterusername.S 
+
+                        var time = new Date(parseInt(wallData.timestamp.S))
+                        const h5 = document.createElement('h5');
+                        h5.setAttribute('style', 'margin-top: 1rem;')
+                        h5.innerHTML = time.toLocaleString('en-US', {timeZone: 'EST'}).toString();
+
+                        const p = document.createElement('p');
+
+
+
+                        const divform = document.createElement('div');
+                        divform.setAttribute("id", wallData.postuniqueid.S + "-comments");
+                        const form = document.createElement('form');
+                        form.setAttribute("id", wallData.postuniqueid.S);
+                        form.setAttribute("method", "POST")
+                        form.setAttribute("onsubmit", "addComment(this.id); return false")
+                        const input1 = document.createElement('input');
+                        input1.setAttribute("name", "comment")
+                        input1.setAttribute("type", "text");
+                        input1.setAttribute("class", "form-control")
+                        input1.setAttribute("placeholder", "Comment")
+                        input1.setAttribute("required", "")
+
+                        const input2 = document.createElement('input');
+                        input2.setAttribute("type", "submit");
+                        input2.setAttribute("value", "Add Comment")
+                        input2.setAttribute("class", "btn btn-dark")
+                    
+                        form.append(input1)
+                        form.append(input2)
+                        divform.append(form)
+                        p.innerHTML = wallData.content.S
+                        divpostmain.append(divpost)
+                        divpost.prepend(divform)
+                        divpost.prepend(p)
+                        divpost.prepend(h5)
+                        divpost.prepend(h4)
+                        div.prepend(divpostmain)
+                    } else {
+
+                    }
+                }
+            })
+        }
+
+        function removeFriend() {
+            var data = {
+                u1: loggedinuser,
+                u2: wallusername,
+            }
+            $.ajax({
+                type: "POST",
+                url: "/removeFriend",
+                data: data,
+                success: function (bool) {
+                    if (bool) {
+                        location.reload()
+                    } else {
+                        alert('There was an error connecting to the server');
+                    }
+                }
+            })
+        }
+        function refresh() {
+            init()
+            setTimeout(refresh, 5000);
+        }
+        refresh()
+    </script>
+</body>
+
+</html>

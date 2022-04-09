@@ -1,0 +1,10 @@
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/loader/ArticleLikeTable.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/config/Config.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/storage/SparkConnector.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/hw3/livy/ComputeRanksLivy.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/hw3/ComputeRanks.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/adsorption/Adsorption.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/loader/NewsSearch.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/hw3/livy/SocialRankJob.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/hw3/livy/MyPair.java
+/home/nets212/git/G16/project/src/main/java/edu/upenn/cis/nets212/storage/DynamoConnector.java
