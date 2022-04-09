@@ -39,10 +39,10 @@ A miniature version of Facebook that has features such as creating accounts, cre
 - Socket.io
 
 ### Credit
-| Names      | 
-| ----------- |
-| Anna Orosz      |
-| Raymon Shi   |
-| Rohan Verma  | 
-| Alex Zhang  | 
+| Names      | Features |
+| ----------- | ----------- |
+| Anna Orosz      | Chat|
+| Raymon Shi   | News Feed |
+| Rohan Verma  | Accounts, Walls, and Home Page |
+| Alex Zhang  | Accounts, Walls, and Home Page |
 
